@@ -89,13 +89,18 @@ curl https://api.openai.com/v1/chat/completions \
 
     if (req.stream) {
       const abortController = new AbortController()
+      console.log ("STREAMING");
       return streamSSE(c, async (stream) => {
+        console.log ("IN STREAM");
         stream.onAbort(() => abortController.abort())
+        console.log ("INVOKING");
         const openaiResponse = await llm?.invoke(req);
+        console.log ("RESPONSE", openaiResponse);
+
         stream.writeSSE({ data: JSON.stringify(openaiResponse) })
       })
     }
-    
+
     req.stream = false;
     const openaiResponse = await llm?.invoke(req);
     

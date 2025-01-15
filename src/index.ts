@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { streamSSE } from 'hono/streaming'
+import { streamSSE, streamText } from 'hono/streaming'
 import { openai } from './llm/openai'
 import { anthropic, anthropicVertex } from './llm/anthropic'
 import OpenAI from 'openai'
@@ -92,15 +92,26 @@ curl https://api.openai.com/v1/chat/completions \
     if (req.stream) {
       const abortController = new AbortController()
       console.log ("STREAMING");
-      return streamSSE(c, async (stream) => {
+
+      return streamText(c, async (stream) => {
+        
         console.log ("IN STREAM");
         stream.onAbort(() => abortController.abort())
         console.log ("INVOKING");
         const openaiResponse = await llm?.invoke(req);
         console.log ("RESPONSE", JSON.stringify(openaiResponse));
 
-        stream.writeSSE({ data: JSON.stringify(openaiResponse) })
+        stream.write(JSON.stringify({ data: openaiResponse }))
       })
+      /*return streamSSE(c, async (stream) => {
+        console.log ("IN STREAM");
+        stream.onAbort(() => abortController.abort())
+        console.log ("INVOKING");
+        const openaiResponse = await llm?.invoke(req);
+        console.log ("RESPONSE", JSON.stringify(openaiResponse));
+
+        stream.stream({ data: JSON.stringify(openaiResponse) })
+      })*/
     }
 
     req.stream = false;

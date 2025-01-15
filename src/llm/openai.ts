@@ -50,8 +50,10 @@ export function openaiBase(options: {
       const _req = pre(req)
       const client = options.createClient(_req)
 
-      console.log(_req);
-
+      if(_req.model == 'o1') {
+        _req.max_completion_tokens = _req.max_tokens;
+        delete _req.max_tokens;
+      }
       return client.chat.completions.create({
         ..._req,
         stream: false,

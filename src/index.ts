@@ -97,6 +97,7 @@ curl https://api.openai.com/v1/chat/completions \
       })
     }
     console.log("PARAMS", req)
+    req.stream = false;
     const openaiResponse = await llm?.invoke(req);
     console.log(openaiResponse);
     return c.json(openaiResponse)

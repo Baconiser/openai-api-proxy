@@ -78,6 +78,8 @@ curl https://api.openai.com/v1/chat/completions \
     return next()
   })
   .post('/v1/chat/completions', async (c) => {
+    
+  c.header('Content-Encoding', 'Identity')
     const req = (await c.req.json()) as
       | OpenAI.ChatCompletionCreateParamsNonStreaming
       | OpenAI.ChatCompletionCreateParamsStreaming

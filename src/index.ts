@@ -101,7 +101,7 @@ curl https://api.openai.com/v1/chat/completions \
         const openaiResponse = await llm?.invoke(req);
         console.log ("RESPONSE", JSON.stringify(openaiResponse));
 
-        stream.write(JSON.stringify({ data: openaiResponse }))
+        stream.write(JSON.stringify( openaiResponse ))
       })
       /*return streamSSE(c, async (stream) => {
         console.log ("IN STREAM");

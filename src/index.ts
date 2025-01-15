@@ -99,9 +99,26 @@ curl https://api.openai.com/v1/chat/completions \
         stream.onAbort(() => abortController.abort())
         console.log ("INVOKING");
         const openaiResponse = await llm?.invoke(req);
-        console.log ("RESPONSE", JSON.stringify(openaiResponse));
+        const [message] = openaiResponse.choices;
+        const resp = {
+          id: openaiResponse.id,
+          "object": "chat.completion.chunk",
+          created: openaiResponse.created,
+          model: openaiResponse.model,
+          choices: [{
+              index: 0,
+              finish_reason: message.finish_reason,
+              delta: {
+                  content: message.message.content,
+                  "role": message.message.role
+              },
 
-        stream.write(JSON.stringify( openaiResponse ))
+          }]
+        };
+
+        console.log ("RESPONSE", JSON.stringify(resp));
+
+        stream.write(JSON.stringify( resp ))
       })
       /*return streamSSE(c, async (stream) => {
         console.log ("IN STREAM");

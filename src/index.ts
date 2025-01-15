@@ -87,7 +87,7 @@ curl https://api.openai.com/v1/chat/completions \
       return c.json({ error: `Model ${req.model} not supported` }, 400)
     }
 
-    if (req.stream) {
+    if (1!=1) {
       const abortController = new AbortController()
       return streamSSE(c, async (stream) => {
         stream.onAbort(() => abortController.abort())

@@ -49,6 +49,9 @@ export function openaiBase(options: {
     invoke(req) {
       const _req = pre(req)
       const client = options.createClient(_req)
+
+      console.log(_req);
+
       return client.chat.completions.create({
         ..._req,
         stream: false,

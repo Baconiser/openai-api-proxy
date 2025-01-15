@@ -87,19 +87,18 @@ curl https://api.openai.com/v1/chat/completions \
       return c.json({ error: `Model ${req.model} not supported` }, 400)
     }
 
-    if (1!=1) {
+    if (req.stream) {
       const abortController = new AbortController()
       return streamSSE(c, async (stream) => {
         stream.onAbort(() => abortController.abort())
-        for await (const it of llm.stream(req, abortController.signal)) {
-          stream.writeSSE({ data: JSON.stringify(it) })
-        }
+        const openaiResponse = await llm?.invoke(req);
+        stream.writeSSE({ data: JSON.stringify(openaiResponse) })
       })
     }
-    console.log("PARAMS", req)
+    
     req.stream = false;
     const openaiResponse = await llm?.invoke(req);
-    console.log(openaiResponse);
+    
     return c.json(openaiResponse)
   })
   .get('/v1/models', async (c) => {
